@@ -82,6 +82,7 @@
 | <img src="src/assets/us/BJO.svg" width="64" height="64" style="margin: 4px;"> | 백지오 | `UX/UI 디자인` `편집 디자인` | [github](https://github.com/jio311) [포트폴리오](https://sites.google.com/view/jiographic) |
 | <img src="src/assets/us/GYG.svg" width="64" height="64" style="margin: 4px;"> | 고예경 | `QA` `UX 개선` `기획안 개선` | [github](https://github.com/ZakZak0112) |
 | <img src="src/assets/us/HJH.svg" width="64" height="64" style="margin: 4px;"> | 황준호 | `데이터 분석 및 통계` | [github](URL) [블로그](URL) |
+| <img src="src/assets/us/PJM.svg" width="64" height="64" style="margin: 4px;"> | 박정민 | `프론트 유지보수` | [github](https://github.com/jeongminnnnni) [블로그](https://jeongm1n1.tistory.com) |
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
