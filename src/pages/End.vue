@@ -384,25 +384,16 @@ async function captureAndSetImage() {
 
 async function downloadImage(url) {
   try {
-    const isAndroid = /Android/i.test(navigator.userAgent);
+    const isAndroidWebView = /Android/i.test(navigator.userAgent) && /wv/i.test(navigator.userAgent);
+    const isSamsungBrowser = /SamsungBrowser/i.test(navigator.userAgent);
 
-    // 안드로이드일 경우, Blob URL을 Base64로 변환하여 다운로드
-    if (isAndroid) {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64data = reader.result;
-        const link = document.createElement('a');
-        link.href = base64data;
-        link.download = "dung-dong-result.png";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      };
-      reader.readAsDataURL(blob);
+    // 일부 Android 웹뷰 또는 삼성 브라우저에서는 download 속성이 blob URL에 대해 안정적으로 동작하지 않음
+    if (isAndroidWebView || isSamsungBrowser) {
+      window.open(url, '_blank');
+      toastMessage.value = "이미지를 새 탭에서 열었습니다. 길게 눌러 저장하세요.";
+      showToast.value = true;
     } else {
-      // 기존 다운로드 방식
+      // 다른 브라우저에서는 기존 다운로드 방식 사용
       const link = document.createElement("a");
       link.href = url;
       link.download = "dung-dong-result.png";
@@ -412,8 +403,16 @@ async function downloadImage(url) {
     }
   } catch (error) {
     console.error("이미지 다운로드 중 오류 발생:", error);
-    toastMessage.value = "이미지 다운로드에 실패했습니다.";
-    showToast.value = true;
+    // 모든 다운로드 시도 실패 시 최종 fallback
+    try {
+      window.open(url, '_blank');
+      toastMessage.value = "다운로드에 실패하여 이미지를 새 탭에서 열었습니다.";
+      showToast.value = true;
+    } catch (e) {
+      console.error("새 탭 열기 실패:", e);
+      toastMessage.value = "이미지 다운로드 및 새 탭 열기에 실패했습니다.";
+      showToast.value = true;
+    }
   }
 }
 
