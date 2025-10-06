@@ -26,7 +26,7 @@
 
 <br>
 
-https://play-tv.kakao.com/embed/player/cliplink/452844611?service=player_share
+[https://play-tv.kakao.com/embed/player/cliplink/452844611?service=player_share](https://tv.kakao.com/v/458427202)
 
 <br>
 
