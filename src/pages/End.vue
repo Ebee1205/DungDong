@@ -360,20 +360,10 @@ async function captureAndSetImage() {
       height: captureRef.value.offsetHeight
     });
 
-    // Blob으로 변환하여 다운로드 가능하도록 처리
-    canvas.toBlob((blob) => {
-      if (!blob) {
-        console.error("Blob 생성 실패");
-        toastMessage.value = "이미지 생성에 실패했습니다.";
-        showToast.value = true;
-        return;
-      }
+    const dataUrl = canvas.toDataURL("image/png");
+    capturedImage.value = dataUrl; // Vue 상태 업데이트
 
-      const url = URL.createObjectURL(blob);
-      capturedImage.value = url; // Vue 상태 업데이트
-
-      console.log("캡처 완료");
-    }, "image/png");
+    console.log("캡처 완료 및 Base64 URL 생성");
 
   } catch (error) {
     console.error("캡처 중 오류 발생:", error.message);
@@ -382,13 +372,30 @@ async function captureAndSetImage() {
   }
 }
 
-function downloadImage(url) {
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "dung-dong-result.png";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+async function downloadImage(dataUrl) {
+  if (!dataUrl) {
+    console.error("이미지 데이터가 없습니다.");
+    toastMessage.value = "다운로드할 이미지가 없습니다.";
+    showToast.value = true;
+    return;
+  }
+
+  try {
+    const link = document.createElement("a");
+    link.href = dataUrl;
+    link.download = "dung-dong-result.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toastMessage.value = "이미지 다운로드가 시작되었습니다.";
+    showToast.value = true;
+
+  } catch (error) {
+    console.error("이미지 다운로드 중 오류 발생:", error);
+    toastMessage.value = "이미지 다운로드에 실패했습니다.";
+    showToast.value = true;
+  }
 }
 
 
