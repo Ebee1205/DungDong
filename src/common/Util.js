@@ -125,7 +125,7 @@ const Util = (function () {
               
                 // 기상 및 취침 시각 추출
                 const wakeupHour = parseInt(wakeUp.split(':')[0], 10);
-                const bedTimeHour = parseInt(bedTime.split(':')[0], 10);
+                let bedTimeHour = parseInt(bedTime.split(':')[0], 10);
 
                 // 0시는 24시로 취급
                 if (bedTimeHour === 24) {
