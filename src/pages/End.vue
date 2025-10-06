@@ -360,20 +360,10 @@ async function captureAndSetImage() {
       height: captureRef.value.offsetHeight
     });
 
-    // Blob으로 변환하여 다운로드 가능하도록 처리
-    canvas.toBlob((blob) => {
-      if (!blob) {
-        console.error("Blob 생성 실패");
-        toastMessage.value = "이미지 생성에 실패했습니다.";
-        showToast.value = true;
-        return;
-      }
+    const dataUrl = canvas.toDataURL("image/png");
+    capturedImage.value = dataUrl; // Vue 상태 업데이트
 
-      const url = URL.createObjectURL(blob);
-      capturedImage.value = url; // Vue 상태 업데이트
-
-      console.log("캡처 완료");
-    }, "image/png");
+    console.log("캡처 완료 및 Base64 URL 생성");
 
   } catch (error) {
     console.error("캡처 중 오류 발생:", error.message);
@@ -382,37 +372,29 @@ async function captureAndSetImage() {
   }
 }
 
-async function downloadImage(url) {
-  try {
-    const isAndroidWebView = /Android/i.test(navigator.userAgent) && /wv/i.test(navigator.userAgent);
-    const isSamsungBrowser = /SamsungBrowser/i.test(navigator.userAgent);
+async function downloadImage(dataUrl) {
+  if (!dataUrl) {
+    console.error("이미지 데이터가 없습니다.");
+    toastMessage.value = "다운로드할 이미지가 없습니다.";
+    showToast.value = true;
+    return;
+  }
 
-    // 일부 Android 웹뷰 또는 삼성 브라우저에서는 download 속성이 blob URL에 대해 안정적으로 동작하지 않음
-    if (isAndroidWebView || isSamsungBrowser) {
-      window.open(url, '_blank');
-      toastMessage.value = "이미지를 새 탭에서 열었습니다. 길게 눌러 저장하세요.";
-      showToast.value = true;
-    } else {
-      // 다른 브라우저에서는 기존 다운로드 방식 사용
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "dung-dong-result.png";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+  try {
+    const link = document.createElement("a");
+    link.href = dataUrl;
+    link.download = "dung-dong-result.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toastMessage.value = "이미지 다운로드가 시작되었습니다.";
+    showToast.value = true;
+
   } catch (error) {
     console.error("이미지 다운로드 중 오류 발생:", error);
-    // 모든 다운로드 시도 실패 시 최종 fallback
-    try {
-      window.open(url, '_blank');
-      toastMessage.value = "다운로드에 실패하여 이미지를 새 탭에서 열었습니다.";
-      showToast.value = true;
-    } catch (e) {
-      console.error("새 탭 열기 실패:", e);
-      toastMessage.value = "이미지 다운로드 및 새 탭 열기에 실패했습니다.";
-      showToast.value = true;
-    }
+    toastMessage.value = "이미지 다운로드에 실패했습니다.";
+    showToast.value = true;
   }
 }
 
