@@ -46,6 +46,18 @@
         no-gutters
       >
         <v-btn 
+          v-if="sHomeBtn"
+          prepend-icon="mdi-arrow-left" 
+          variant="text"
+          @click="handleClickGoPage('home')"
+        >
+          <template v-slot:prepend>
+            <v-icon color="#FF5858"></v-icon>
+          </template>
+          Home
+        </v-btn>
+        <v-btn 
+          v-else="sHomeBtn"
           prepend-icon="mdi-arrow-left" 
           variant="text"
           @click="handleClickGoPage('back')"
@@ -137,10 +149,11 @@ const surveyPage = ref([
   { path: "/survey5", meta: { appbar: true, index: 5 } },
   { path: "/survey6", meta: { appbar: true, index: 6 } },
   { path: "/survey7", meta: { appbar: true, index: 7 } },
-  { path: "/text2img", meta: { appbar: true, index: 1 } },
+  { path: "/text2img", meta: { appbar: true, index: 11 } },
 ]);
 const pageIndex = ref(0);
 
+const sHomeBtn = ref(true);
 const sNextBtn = ref(true);
 const sHeader = ref(false);
 const sFooter = ref(false);
@@ -200,6 +213,7 @@ watch(() => route.path, (path) => {
       console.error("Current path does not exist in surveyPage:", path);
     }
 
+    // 헤더, 푸터, 앱바 설정
     if (path === "/home" || path === "/") {
       sHeader.value = false;
       sFooter.value = false;
@@ -221,10 +235,16 @@ watch(() => route.path, (path) => {
       sAppBar.value = true;
     }
 
-    if (path === "/survey7" || path === "/text2img") {
+    // 전/후/처음 버튼 관련
+    if (path === "/survey7") {
       sNextBtn.value = false;
+      sHomeBtn.value = false;
+    } else if (path === "/survey1" || path === "/text2img") {
+      sNextBtn.value = false;
+      sHomeBtn.value = true;
     } else {
       sNextBtn.value = true;
+      sHomeBtn.value = false;
     }
   },
   { immediate: true }
@@ -251,10 +271,18 @@ function handleClickGoPage(state) {
   }
 
   switch (state) {
+    case "home":
+      openDialog(
+        '처음으로 돌아가기',
+        '처음 화면으로 돌아갑니다.<br>현재까지 작성한 내용은 초기화됩니다.',
+        emitRestartSurvey
+      )
+      break;
+
     case "back":
       if (currentIndex > 0) {
         const previousPage = surveyPage.value[currentIndex - 1]; 
-        console.log("현재 페이지:", route.path);
+        console.log("현재 페이지:", currentIndex.path);
         console.log("이동한 페이지:", previousPage.path);
         router.push(previousPage.path); 
       }
@@ -283,7 +311,6 @@ function handleClickGoPage(state) {
   }
 };
 
-
 function emitHideAppbar() {
   console.log('Event Received: hide appbar');
   sFooter.value = false;
@@ -298,6 +325,7 @@ function emitStartSurvey() {
 function emitRestartSurvey() {
   console.log('Event Received: Restart Survey');
   router.push("/home");
+  dialog.value.dialogActive = false;
   initSurvey();
 };
 
@@ -318,6 +346,7 @@ function emitFixSurvey() {
 //     console.error('Invalid currentStep:', payload.currentStep);
 //   }
 // };
+
 function emitContinueSurvey() {
   console.log('Event Received: Continue Survey');
   router.push("/survey1");
