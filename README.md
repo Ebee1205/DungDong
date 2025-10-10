@@ -30,7 +30,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
+  <a href="https://github.com/GetOurRI/DungDong">
     <img src="src/assets/logo.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -39,13 +39,12 @@
   <p align="center">
     🖼️ 한 장의 이미지로 룸메이트 구하기!
     <br />
-    <a href="https://ebee1205.github.io/DungDong/"><strong>둥지동지 바로가기</strong></a>
+    <a href="https://getourri.github.io/DungDong"><strong>둥지동지 바로가기</strong></a>
+    <a href="https://github.com/GetOurRI"><strong>프로젝트 설명 바로가기</strong></a>
     <br />
     <br />
   </p>
 </div>
-
-
 
 <!-- 프로젝트 소개 -->
 ## 프로젝트 소개
@@ -57,39 +56,6 @@
 모바일 웹에 최적화된 UI를 통해 누구나 간편하게 이용할 수 있습니다.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-### 🎯 주요기능
-✅  **기숙사 룸메이트 구인 설문 제공**  
-  둥지동지에서 제공하는 설문을 통해 사용자가 자신의 기숙사 생활 습관 및 선호사항을 입력할 수 있습니다.
-
-✅ **설문 결과 기반 타이틀 생성**  
-  입력된 응답을 바탕으로 사용자의 특성을 한 줄로 요약한 소개 문구를 자동으로 생성합니다.
-  
-✅ **AI를 활용한 자동 이미지 생성 기능**  
-  기존에 작성한 룸메이트 구인 글을 그대로 붙여넣으면, AI가 텍스트를 분석하여 설문 항목을 자동으로 완성하고 결과 이미지를 생성합니다.
-
-✅ **최종 결과 이미지 생성 및 다운로드 지원**  
-  설문 결과를 한 장의 이미지(1000 x 1000px)로 시각화하고, 이미지를 바로 다운로드하여 룸메이트 구인 게시글에 사용할 수 있습니다.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-### 😎 함께한 사람들
-둥지동지를 제작한 **<칸타르동방구함위원회>** 를 소개합니다. 중앙대 **예술공학부**의 종합예술동아리 [칸타르](https://www.instagram.com/cau_cantar/)를 기반에 두고 모였습니다. 
-<br>덧붙여, <둥지동지> 이름을 지어준 김태희씨, 제작에 힘이 되어준 칸타르 친구들에게 감사인사를 드립니다.
-
-|  | 이름 | 역할 | 비고 |
-|--------|------|-------|------|
-| <img src="src/assets/us/JEB.svg" width="64" height="64" style="margin: 4px;"> | 조은비 | `최초 기획` `프론트 개발` `백엔드 개발` | [github](https://github.com/Ebee1205) [블로그](https://wavicle.tistory.com/) |
-| <img src="src/assets/us/BJO.svg" width="64" height="64" style="margin: 4px;"> | 백지오 | `UX/UI 디자인` `편집 디자인` | [github](https://github.com/jio311) [포트폴리오](https://sites.google.com/view/jiographic) |
-| <img src="src/assets/us/GYG.svg" width="64" height="64" style="margin: 4px;"> | 고예경 | `QA` `UX 개선` `기획안 개선` | [github](https://github.com/ZakZak0112) |
-| <img src="src/assets/us/PJM.svg" width="64" height="64" style="margin: 4px;"> | 박정민 | `프론트 개발` `프론트 유지보수` | [github](https://github.com/jeongminnnnni) [블로그](https://jeongm1n1.tistory.com) |
-| <img src="src/assets/us/HMG.svg" width="64" height="64" style="margin: 4px;"> | 홍민기 | `데이터 분석` | [github](https://github.com/mingiraffe) [블로그](https://mingiraffe03.tistory.com) |
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 ### 📚 기술 스택
@@ -140,66 +106,6 @@
    ``` -->
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- 로드맵 -->
-## 🛠️ 로드맵
-### ✅ 완료된 기능
-- [x] **관별 색상 차별화 적용**  
-  기숙사 관(건물)별로 결과 이미지에 색상 구분을 적용했습니다.  
-  (`v1.0.1` 반영 완료)
-
-### 🏗️ 예정된 기능
-- [ ] **이어하기 기능 추가**  
-  설문 진행 중이거나 완료된 결과를 저장하고 나중에 이어서 작업할 수 있도록 개선할 예정입니다.
-
-- [ ] **룸메이트 구인글 이미지 생성 기능**  
-  작성된 룸메이트 구인글을 기반으로 자동 요약 및 이미지 생성을 제공할 예정입니다.  
-  (`v2.0.0` 이후 적용 예정)
-
-추후 업데이트를 통해 더욱 직관적이고 편리한 기능을 제공할 예정이니 많은 관심 부탁드립니다!
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-### 🚀 업데이트 내역
-자세한 업데이트 내용은 릴리즈 노트를 참고해 주세요!
-
-| 버전        | 출시 날짜      | 주요 업데이트                  |
-| --------- | ---------- | ------------------------ |
-| **1.0.2** | 2025.02.15 | 이미지 출처 표시 추가, 이슈 템플릿 도입  |
-| **1.0.1** | 2025.02.10 | 기숙사별 색상 구분, 이미지 저장 버튼 추가 |
-| **0.4.1** | 2025.02.08 | 버그 픽스 및 기능 추가            |
-| **0.4.0** | 2025.02.07 | 베타버전 배포                  |
-
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-### 📝 작업기
-- 📌 [둥지동지의 시작 - @조은비 [25년 2월 3일]](making/Making_1.md)
-- 📌 [둥지동지 다시 기획하기 - @조은비, 백지오 [25년 2월 8일]](making/Making_2.md)
-- 📌 [둥지동지 디자인 작업기 - @백지오 [25년 2월 11일]](making/Making_3.md)
-- 📌 둥지동지 개발하기 - @조은비 [공개 예정]
-<!-- - 둥동 만들기 - 
-- 둥동 만들기 -->
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- 레퍼런스 -->
-## 레퍼런스
-이 프로젝트는 아래의 프로젝트에서 영감을 받아 제작되었습니다.
-* [썸네일 메이커](https://blog.wonkooklee.com/playground/thumbnail-maker/)
-* [Receiptify](https://receiptify.herokuapp.com)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
