@@ -58,6 +58,13 @@ function setCurrentSurvey() {
   }
 }
 
+// TODO 
+// localStorage.userNotes에 text 와 img 항목 추가,
+// FB 업데이트 이전에 userNotes null check 함수 추가
+// userNotes값이 있으면(생성형 AI 서비스 이용시) > api 호출하여 변환 값과 함께 localStorage.userSurvety에 set
+// api호출은 app.vue에서 전담. 여기는 텍스트 input화면만담당하도록 하자.
+// 혹은 img2emit함수 만든담에 여기서 emit해도 될듯....
+
 // 변경값 로컬스토리지에 저장
 function updateLocalStorage(field, value) {
   const existingSurvey = JSON.parse(localStorage.getItem("userSurvey")) || {};
