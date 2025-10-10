@@ -9,7 +9,7 @@
     </v-row>
     <v-row no-gutters justify="center" class="margin-88px | mt-2">
       <v-col class="title-text-sub">
-        한 장의 이미지로 룸메이트 구하기!
+        선호를 이미지로, 나만의 룸메이트 매칭
       </v-col>
     </v-row>
 
@@ -33,15 +33,32 @@
     </v-card>
 
     <v-row 
-      v-if="sNewStart"
       no-gutters justify="center" class="margin-42 | mt-12"
+    >
+      <v-col class="pa-0 text-center">
+        <div class="speech-bubble float-animation">
+          👇 이미 작성한 글이 있다면 👇
+        </div>
+        <v-btn 
+          @click="handleClickInputBtn"
+          variant="flat" color="#FF6161" rounded="xl" size="large" width="100%" height="52px"
+          class="text-btn"
+        >
+          텍스트 입력하여 제작
+        </v-btn>
+      </v-col>
+    </v-row>
+    <div style="font-size: 16px; margin: 10px auto; text-align: center;">혹은</div>
+    <v-row 
+      v-if="sNewStart"
+      no-gutters justify="center" class="margin-42 | mt-2"
     >
       <v-btn 
         @click="handleClickStartBtn"
         variant="flat" color="#FF6161" rounded="xl" size="large" width="100%" height="52px"
         class="text-btn"
       >
-        시작하기
+        직접 체크하여 제작
       </v-btn>
     </v-row>
     <v-row 
@@ -103,6 +120,12 @@ const sNewStart = ref(true);
 const sCtnStart = ref(false);
 
 // ----- 함수 정의 ----- //
+const router = useRouter();
+
+// 텍스트로 제작
+function handleClickInputBtn() {
+  router.push('/input');
+}
 
 // 설문 시작
 function handleClickStartBtn() {
@@ -155,7 +178,7 @@ function handleClickContBtn() {
 
 .title-text-sub {
   text-align: center;
-  font-size: 16px;
+  font-size: 15px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -169,6 +192,11 @@ function handleClickContBtn() {
   font-style: normal;
   font-weight: 700;
   letter-spacing: -0.4px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.text-btn:hover {
+  transform: scale(1.05);
 }
 
 .card-title-text {
@@ -179,6 +207,67 @@ function handleClickContBtn() {
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+}
+
+.speech-bubble {
+  position: relative;
+  background-color: #FFFFFF;
+  color: #000000;
+  border: 1px solid #424242;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 8px 16px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-bottom: 22px; /* Increased margin for tail */
+  font-size: 14px;
+  font-weight: bold;
+  filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* Tail border */
+.speech-bubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #424242;
+}
+
+/* Tail fill */
+.speech-bubble::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10.5px solid transparent;
+  border-right: 10.5px solid transparent;
+  border-top: 10.5px solid #FFFFFF;
+  margin-top: -1.5px; 
+  z-index: 1; 
+}
+
+.float-animation {
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(1px);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+  100% {
+    transform: translateY(1px);
+  }
 }
 
 </style>

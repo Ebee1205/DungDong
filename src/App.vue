@@ -203,7 +203,7 @@ watch(() => route.path, (path) => {
       sFooter.value = false;
       sAppBar.value = false;
 
-    } else if (path === "/end") {
+    } else if (path === "/end" || path === "/input") {
       sFooter.value = false;
       sAppBar.value = true;
 
