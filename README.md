@@ -66,6 +66,9 @@
 ✅ **설문 결과 기반 타이틀 생성**  
   입력된 응답을 바탕으로 사용자의 특성을 한 줄로 요약한 소개 문구를 자동으로 생성합니다.
   
+✅ **AI를 활용한 자동 이미지 생성 기능**  
+  기존에 작성한 룸메이트 구인 글을 그대로 붙여넣으면, AI가 텍스트를 분석하여 설문 항목을 자동으로 완성하고 결과 이미지를 생성합니다.
+
 ✅ **최종 결과 이미지 생성 및 다운로드 지원**  
   설문 결과를 한 장의 이미지(1000 x 1000px)로 시각화하고, 이미지를 바로 다운로드하여 룸메이트 구인 게시글에 사용할 수 있습니다.
 
@@ -78,10 +81,11 @@
 
 |  | 이름 | 역할 | 비고 |
 |--------|------|-------|------|
-| <img src="src/assets/us/JEB.svg" width="64" height="64" style="margin: 4px;"> | 조은비 | `최초 기획` `프론트 개발` | [github](https://github.com/Ebee1205) [블로그](https://wavicle.tistory.com/) |
+| <img src="src/assets/us/JEB.svg" width="64" height="64" style="margin: 4px;"> | 조은비 | `최초 기획` `프론트 개발` `백엔드 개발` | [github](https://github.com/Ebee1205) [블로그](https://wavicle.tistory.com/) |
 | <img src="src/assets/us/BJO.svg" width="64" height="64" style="margin: 4px;"> | 백지오 | `UX/UI 디자인` `편집 디자인` | [github](https://github.com/jio311) [포트폴리오](https://sites.google.com/view/jiographic) |
 | <img src="src/assets/us/GYG.svg" width="64" height="64" style="margin: 4px;"> | 고예경 | `QA` `UX 개선` `기획안 개선` | [github](https://github.com/ZakZak0112) |
-| <img src="src/assets/us/PJM.svg" width="64" height="64" style="margin: 4px;"> | 박정민 | `프론트 유지보수` | [github](https://github.com/jeongminnnnni) [블로그](https://jeongm1n1.tistory.com) |
+| <img src="src/assets/us/PJM.svg" width="64" height="64" style="margin: 4px;"> | 박정민 | `프론트 개발` `프론트 유지보수` | [github](https://github.com/jeongminnnnni) [블로그](https://jeongm1n1.tistory.com) |
+| <img src="src/assets/us/HMG.svg" width="64" height="64" style="margin: 4px;"> | 홍민기 | `데이터 분석` | [github](https://github.com/mingiraffe) [블로그](https://mingiraffe03.tistory.com) |
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
