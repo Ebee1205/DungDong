@@ -81,7 +81,7 @@
 | <img src="src/assets/us/JEB.svg" width="64" height="64" style="margin: 4px;"> | 조은비 | `최초 기획` `프론트 개발` | [github](https://github.com/Ebee1205) [블로그](https://wavicle.tistory.com/) |
 | <img src="src/assets/us/BJO.svg" width="64" height="64" style="margin: 4px;"> | 백지오 | `UX/UI 디자인` `편집 디자인` | [github](https://github.com/jio311) [포트폴리오](https://sites.google.com/view/jiographic) |
 | <img src="src/assets/us/GYG.svg" width="64" height="64" style="margin: 4px;"> | 고예경 | `QA` `UX 개선` `기획안 개선` | [github](https://github.com/ZakZak0112) |
-| <img src="src/assets/us/HJH.svg" width="64" height="64" style="margin: 4px;"> | 황준호 | `데이터 분석 및 통계` | [github](URL) [블로그](URL) |
+| <img src="src/assets/us/PJM.svg" width="64" height="64" style="margin: 4px;"> | 박정민 | `프론트 유지보수` | [github](https://github.com/jeongminnnnni) [블로그](https://jeongm1n1.tistory.com) |
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -141,12 +141,18 @@
 
 <!-- 로드맵 -->
 ## 🛠️ 로드맵
+### ✅ 완료된 기능
+- [x] **관별 색상 차별화 적용**  
+  기숙사 관(건물)별로 결과 이미지에 색상 구분을 적용했습니다.  
+  (`v1.0.1` 반영 완료)
+
 ### 🏗️ 예정된 기능
 - [ ] **이어하기 기능 추가**  
   설문 진행 중이거나 완료된 결과를 저장하고 나중에 이어서 작업할 수 있도록 개선할 예정입니다.
 
-- [ ] **관별 색상 차별화 적용**  
-  기숙사 관(건물)별로 최종 결과 이미지의 색상을 다르게 적용하여 구별이 쉽도록 개선할 계획입니다.
+- [ ] **룸메이트 구인글 이미지 생성 기능**  
+  작성된 룸메이트 구인글을 기반으로 자동 요약 및 이미지 생성을 제공할 예정입니다.  
+  (`v2.0.0` 이후 적용 예정)
 
 추후 업데이트를 통해 더욱 직관적이고 편리한 기능을 제공할 예정이니 많은 관심 부탁드립니다!
 
@@ -157,10 +163,14 @@
 ### 🚀 업데이트 내역
 자세한 업데이트 내용은 릴리즈 노트를 참고해 주세요!
 
-|버전	|출시 날짜	|주요 업데이트
-|-----|-----|-----|
-0.4.0	|2025.02.07	| 베타버전 배포
-0.4.1	|2025.02.08	| 버그픽스, 추가...
+| 버전        | 출시 날짜      | 주요 업데이트                  |
+| --------- | ---------- | ------------------------ |
+| **1.0.2** | 2025.02.15 | 이미지 출처 표시 추가, 이슈 템플릿 도입  |
+| **1.0.1** | 2025.02.10 | 기숙사별 색상 구분, 이미지 저장 버튼 추가 |
+| **0.4.1** | 2025.02.08 | 버그 픽스 및 기능 추가            |
+| **0.4.0** | 2025.02.07 | 베타버전 배포                  |
+
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
