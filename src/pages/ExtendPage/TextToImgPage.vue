@@ -8,7 +8,7 @@
     <v-row no-gutters justify="center" class="mt-8">
       <v-col cols="12" md="12" lg="12">
         <v-textarea
-          label="기존 소개글을 입력하세요."
+          label="룸메이트 구인 글을 입력해주세요."
           variant="outlined"
           :rows="textareaRows"
           auto-grow
@@ -18,17 +18,6 @@
           @blur="onBlur"
         ></v-textarea>
       </v-col>
-    </v-row>
-    <v-row no-gutters justify="end" class="mt-4">
-      <v-btn
-        variant="text"
-        color="#FF6161"
-        class="finish-btn"
-        @click="finish"
-      >
-        Finish
-        <v-icon right>mdi-arrow-right</v-icon>
-      </v-btn>
     </v-row>
   </v-container>
 </template>

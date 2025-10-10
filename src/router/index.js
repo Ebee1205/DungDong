@@ -22,9 +22,9 @@ const routes = [
     component: () => import(/* webpackChunkName: "home" */ "@/pages/Home.vue")
   },
   {
-    path: '/input',
-    name: 'InputPage',
-    component: () => import(/* webpackChunkName: "input" */ "@/pages/InputPage.vue")
+    path: '/text2img',
+    name: 'TextToImgPage',
+    component: () => import(/* webpackChunkName: "input" */ "@/pages/ExtendPage/TextToImgPage.vue")
   },
   {
     path: '/survey1',

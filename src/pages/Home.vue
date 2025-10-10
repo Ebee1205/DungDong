@@ -9,7 +9,7 @@
     </v-row>
     <v-row no-gutters justify="center" class="margin-88px | mt-2">
       <v-col class="title-text-sub">
-        선호를 이미지로, 나만의 룸메이트 매칭
+        한 장의 이미지로 룸메이트 구하기!
       </v-col>
     </v-row>
 
@@ -40,7 +40,7 @@
           👇 이미 작성한 글이 있다면 👇
         </div>
         <v-btn 
-          @click="handleClickInputBtn"
+          @click="handleClickTextToImgBtn"
           variant="flat" color="#FF6161" rounded="xl" size="large" width="100%" height="52px"
           class="text-btn"
         >
@@ -123,8 +123,8 @@ const sCtnStart = ref(false);
 const router = useRouter();
 
 // 텍스트로 제작
-function handleClickInputBtn() {
-  router.push('/input');
+function handleClickTextToImgBtn() {
+  router.push('/text2img');
 }
 
 // 설문 시작

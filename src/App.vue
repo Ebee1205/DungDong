@@ -13,7 +13,7 @@
           </v-row>
         </v-col>
         <v-col cols="8">
-          <v-row v-if="sFooter" class="align-center | justify-end | pr-2">
+          <v-row v-if="sHeader" class="align-center | justify-end | pr-2">
             <v-col cols="auto" class="progress-bar">
                 <div
                 v-for="(step, index) in 7"
@@ -137,11 +137,12 @@ const surveyPage = ref([
   { path: "/survey5", meta: { appbar: true, index: 5 } },
   { path: "/survey6", meta: { appbar: true, index: 6 } },
   { path: "/survey7", meta: { appbar: true, index: 7 } },
-  // { path: "/end", meta: { appbar: false, index: 8 } },
+  { path: "/text2img", meta: { appbar: true, index: 1 } },
 ]);
 const pageIndex = ref(0);
 
 const sNextBtn = ref(true);
+const sHeader = ref(false);
 const sFooter = ref(false);
 const sAppBar = ref(false);
 
@@ -200,19 +201,27 @@ watch(() => route.path, (path) => {
     }
 
     if (path === "/home" || path === "/") {
+      sHeader.value = false;
       sFooter.value = false;
       sAppBar.value = false;
 
-    } else if (path === "/end" || path === "/input") {
+    } else if (path === "/text2img") {
+      sHeader.value = false;
+      sFooter.value = true;
+      sAppBar.value = true;
+
+    } else if (path === "/end") {
+      sHeader.value = false;
       sFooter.value = false;
       sAppBar.value = true;
 
     } else {
+      sHeader.value = true;
       sFooter.value = true;
       sAppBar.value = true;
     }
 
-    if (path === "/survey7") {
+    if (path === "/survey7" || path === "/text2img") {
       sNextBtn.value = false;
     } else {
       sNextBtn.value = true;
