@@ -71,3 +71,65 @@
 *   `vue-router`를 사용하여 해시 기반(#) 라우팅을 구현했습니다.
 *   `/` 경로는 `/home`으로 리다이렉트됩니다.
 *   설문조사 페이지, 시작 페이지, 결과 페이지에 대한 경로가 정의되어 있습니다.
+
+## 5. 개발 가이드
+
+### 5.1. Vue 컴포넌트 템플릿 구조
+
+이 프로젝트의 Vue 컴포넌트는 일관된 구조와 스타일 가이드를 따릅니다. 새로운 컴포넌트를 만들거나 기존 코드를 수정할 때 다음 규칙을 준수해야 합니다.
+
+#### 1. 파일 구조
+
+모든 `.vue` 파일은 다음 세 가지 주요 섹션으로 구성됩니다.
+
+```vue
+<template>
+  <!-- HTML 및 Vuetify 컴포넌트 마크업 -->
+</template>
+
+<script setup>
+  // 스크립트 로직 (Composition API)
+</script>
+
+<style scoped>
+  /* 컴포넌트 범위의 스타일 */
+</style>
+```
+
+#### 2. `<script setup>` 섹션 구조
+
+스크립트 섹션은 가독성을 위해 주석으로 명확하게 구분된 세 부분으로 나뉩니다.
+
+```javascript
+// ----- 선언부 ----- //
+// import 구문, ref, reactive, props, emits 등 변수 및 상태 선언
+
+// ----- 라이프 사이클 ----- //
+// onMounted, onUnmounted, watch 등 생명주기 훅
+
+// ----- 함수 정의 ----- //
+// methods, event handlers 등 모든 함수 정의
+```
+
+*   **선언부**: `import` 문, `ref()`를 사용한 반응형 상태, `defineProps`, `defineEmits` 등을 이 곳에 배치합니다.
+*   **라이프 사이클**: `onMounted`, `watch`와 같은 Vue의 생명주기 훅을 사용합니다.
+*   **함수 정의**: 클릭 이벤트 핸들러(`handleClick...`)나 내부 로직을 처리하는 모든 함수를 정의합니다.
+
+#### 3. UI 및 스타일링
+
+*   **UI 프레임워크**: Vuetify 3를 적극적으로 활용합니다. 레이아웃은 `v-container`, `v-row`, `v-col`로 구성하고, 버튼(`v-btn`), 선택(`v-select`) 등 다양한 UI 컴포넌트를 사용합니다.
+*   **스타일**:
+    *   모든 스타일은 `<style scoped>` 안에 작성하여 다른 컴포넌트와의 충돌을 방지합니다.
+    *   Vuetify의 내장 클래스와 함께 커스텀 클래스를 사용합니다. 클래스명은 `|` 문자로 구분하는 독특한 컨벤션이 있으나, 표준 방식인 공백 구분도 허용됩니다. (예: `class="mx-auto | margin-top-56"`)
+    *   자식 컴포넌트의 스타일을 수정해야 할 경우 `:deep()` 선택자를 사용합니다.
+
+#### 4. 상태 관리 및 라우팅
+
+*   **상태 관리**: 사용자의 설문 데이터(`userSurvey`)와 진행 상태(`userProgress`)는 `localStorage`를 통해 브라우저에 저장하여 지속성을 유지합니다.
+*   **라우팅**: 페이지 이동은 `vue-router`의 `useRouter()` 훅을 사용하며, `router.push()`를 통해 프로그래밍 방식으로 제어합니다.
+
+#### 5. 명명 규칙
+
+*   **파일/컴포넌트**: `PascalCase` (예: `SurveyPage1.vue`, `BoxContainer.vue`)
+*   **변수/함수**: `camelCase` (예: `pageIndex`, `handleClickGoPage`)
+*   **이벤트**: 부모 컴포넌트로 전달하는 이벤트명은 `kebab-case` (예: `start-survey`)를 사용합니다.

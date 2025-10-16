@@ -187,7 +187,8 @@ const survey = ref({
   share: 0,           // 공유·공용물품 성향 0,1,2,3 (int)
   home: 0,      // 귀가 주기 0,1,2,3 (int)
   selectTag: [],           // 해시태그(태그) 배열 (문자열 리스트)
-  notes: ""           // 기타 참고사항 (서술형 문자열)
+  notes: "",           // 기타 참고사항 (서술형 문자열)
+  imageUrl: ""         // 생성된 이미지 URL
 });
 
 
@@ -209,7 +210,7 @@ watch(() => route.path, (path) => {
     const currentPage = surveyPage.value.find((page) => page.path === path);
     if (currentPage) {
       pageIndex.value = currentPage.meta.index - 1;
-    } else {
+    } else if (!['/end', '/home', '/'].includes(path)) {
       console.error("Current path does not exist in surveyPage:", path);
     }
 
@@ -236,15 +237,19 @@ watch(() => route.path, (path) => {
     }
 
     // 전/후/처음 버튼 관련
-    if (path === "/survey7") {
-      sNextBtn.value = false;
-      sHomeBtn.value = false;
-    } else if (path === "/survey1" || path === "/text2img") {
-      sNextBtn.value = false;
-      sHomeBtn.value = true;
+
+    // 'Next' vs 'Finish' button logic
+    if (path === '/survey7' || path === '/text2img') {
+      sNextBtn.value = false; // Show Finish
     } else {
-      sNextBtn.value = true;
-      sHomeBtn.value = false;
+      sNextBtn.value = true; // Show Next
+    }
+
+    // 'Home' vs 'Back' button logic
+    if (path === '/survey1' || path === '/text2img') {
+      sHomeBtn.value = true; // Show Home
+    } else {
+      sHomeBtn.value = false; // Show Back
     }
   },
   { immediate: true }
@@ -360,17 +365,53 @@ function openDialog(title, text, onConfirm) {
 }
 
 // 파이어베이스
-function submitSurveyToFB() {
+// 신규: 텍스트로 이미지 생성 API를 호출하는 함수
+async function generateImageFromText(text) {
+  // 로딩 UI 표시 (필요 시)
+  console.log("AI 이미지 생성을 시작합니다:", text);
+
+  try {
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const tid = `survey-${Date.now()}`; // 간단한 트랜잭션 ID 생성
+    const response = await axios.post(`${baseUrl}/v1/generate/survey`, {
+      tid: tid,
+      orig_text: text,
+    });
+
+    console.log("AI 이미지 생성 완료:", response.data.imageUrl);
+    return response.data.imageUrl; // API 응답에서 이미지 URL 반환
+  } catch (error) {
+    console.error("AI 이미지 생성 실패:", error);
+    // 에러 UI 표시 (필요 시)
+    return null;
+  } finally {
+    // 로딩 UI 숨김 (필요 시)
+  }
+}
+
+// 수정: 파이어베이스 제출 함수
+async function submitSurveyToFB() {
   const existingSurvey = localStorage.getItem('userSurvey');
   console.log('get existingSurvey', existingSurvey);
 
   if (existingSurvey) {
     const parseSurvey = JSON.parse(existingSurvey);
 
+    // 1. TextToImg 페이지에서 입력한 텍스트가 있는지 확인
+    if (route.path === '/text2img' && parseSurvey.notes) {
+      // 2. 이미지 생성 API 호출
+      const generatedUrl = await generateImageFromText(parseSurvey.notes);
+      if (generatedUrl) {
+        // 3. 반환된 이미지 URL을 survey 객체에 저장
+        parseSurvey.imageUrl = generatedUrl;
+      }
+    }
+
+    // 4. 최종 데이터로 FB에 저장 또는 업데이트
     if (!lastDocumentId.value) {
-      submitSurvey(parseSurvey); // TODO 배포시에 주석 풀기
+      await submitSurvey(parseSurvey);
     } else {
-      updateSurvey(parseSurvey); // TODO 배포시에 주석 풀기
+      await updateSurvey(parseSurvey);
     }
   } else {
     console.error("No survey data to submit.");
