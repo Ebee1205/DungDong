@@ -13,7 +13,7 @@
           </v-row>
         </v-col>
         <v-col cols="8">
-          <v-row v-if="sFooter" class="align-center | justify-end | pr-2">
+          <v-row v-if="sHeader" class="align-center | justify-end | pr-2">
             <v-col cols="auto" class="progress-bar">
                 <div
                 v-for="(step, index) in 7"
@@ -46,6 +46,18 @@
         no-gutters
       >
         <v-btn 
+          v-if="sHomeBtn"
+          prepend-icon="mdi-arrow-left" 
+          variant="text"
+          @click="handleClickGoPage('home')"
+        >
+          <template v-slot:prepend>
+            <v-icon color="#FF5858"></v-icon>
+          </template>
+          Home
+        </v-btn>
+        <v-btn 
+          v-else="sHomeBtn"
           prepend-icon="mdi-arrow-left" 
           variant="text"
           @click="handleClickGoPage('back')"
@@ -137,11 +149,13 @@ const surveyPage = ref([
   { path: "/survey5", meta: { appbar: true, index: 5 } },
   { path: "/survey6", meta: { appbar: true, index: 6 } },
   { path: "/survey7", meta: { appbar: true, index: 7 } },
-  // { path: "/end", meta: { appbar: false, index: 8 } },
+  { path: "/text2img", meta: { appbar: true, index: 11 } },
 ]);
 const pageIndex = ref(0);
 
+const sHomeBtn = ref(true);
 const sNextBtn = ref(true);
+const sHeader = ref(false);
 const sFooter = ref(false);
 const sAppBar = ref(false);
 
@@ -173,7 +187,8 @@ const survey = ref({
   share: 0,           // 공유·공용물품 성향 0,1,2,3 (int)
   home: 0,      // 귀가 주기 0,1,2,3 (int)
   selectTag: [],           // 해시태그(태그) 배열 (문자열 리스트)
-  notes: ""           // 기타 참고사항 (서술형 문자열)
+  notes: "",           // 기타 참고사항 (서술형 문자열)
+  imageUrl: ""         // 생성된 이미지 URL
 });
 
 
@@ -195,27 +210,46 @@ watch(() => route.path, (path) => {
     const currentPage = surveyPage.value.find((page) => page.path === path);
     if (currentPage) {
       pageIndex.value = currentPage.meta.index - 1;
-    } else {
+    } else if (!['/end', '/home', '/'].includes(path)) {
       console.error("Current path does not exist in surveyPage:", path);
     }
 
+    // 헤더, 푸터, 앱바 설정
     if (path === "/home" || path === "/") {
+      sHeader.value = false;
       sFooter.value = false;
       sAppBar.value = false;
 
+    } else if (path === "/text2img") {
+      sHeader.value = false;
+      sFooter.value = true;
+      sAppBar.value = true;
+
     } else if (path === "/end") {
+      sHeader.value = false;
       sFooter.value = false;
       sAppBar.value = true;
 
     } else {
+      sHeader.value = true;
       sFooter.value = true;
       sAppBar.value = true;
     }
 
-    if (path === "/survey7") {
-      sNextBtn.value = false;
+    // 전/후/처음 버튼 관련
+
+    // 'Next' vs 'Finish' button logic
+    if (path === '/survey7' || path === '/text2img') {
+      sNextBtn.value = false; // Show Finish
     } else {
-      sNextBtn.value = true;
+      sNextBtn.value = true; // Show Next
+    }
+
+    // 'Home' vs 'Back' button logic
+    if (path === '/survey1' || path === '/text2img') {
+      sHomeBtn.value = true; // Show Home
+    } else {
+      sHomeBtn.value = false; // Show Back
     }
   },
   { immediate: true }
@@ -242,10 +276,18 @@ function handleClickGoPage(state) {
   }
 
   switch (state) {
+    case "home":
+      openDialog(
+        '처음으로 돌아가기',
+        '처음 화면으로 돌아갑니다.<br>현재까지 작성한 내용은 초기화됩니다.',
+        emitRestartSurvey
+      )
+      break;
+
     case "back":
       if (currentIndex > 0) {
         const previousPage = surveyPage.value[currentIndex - 1]; 
-        console.log("현재 페이지:", route.path);
+        console.log("현재 페이지:", currentIndex.path);
         console.log("이동한 페이지:", previousPage.path);
         router.push(previousPage.path); 
       }
@@ -274,7 +316,6 @@ function handleClickGoPage(state) {
   }
 };
 
-
 function emitHideAppbar() {
   console.log('Event Received: hide appbar');
   sFooter.value = false;
@@ -289,6 +330,7 @@ function emitStartSurvey() {
 function emitRestartSurvey() {
   console.log('Event Received: Restart Survey');
   router.push("/home");
+  dialog.value.dialogActive = false;
   initSurvey();
 };
 
@@ -309,6 +351,7 @@ function emitFixSurvey() {
 //     console.error('Invalid currentStep:', payload.currentStep);
 //   }
 // };
+
 function emitContinueSurvey() {
   console.log('Event Received: Continue Survey');
   router.push("/survey1");
@@ -322,17 +365,53 @@ function openDialog(title, text, onConfirm) {
 }
 
 // 파이어베이스
-function submitSurveyToFB() {
+// 신규: 텍스트로 이미지 생성 API를 호출하는 함수
+async function generateImageFromText(text) {
+  // 로딩 UI 표시 (필요 시)
+  console.log("AI 이미지 생성을 시작합니다:", text);
+
+  try {
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const tid = `survey-${Date.now()}`; // 간단한 트랜잭션 ID 생성
+    const response = await axios.post(`${baseUrl}/v1/generate/survey`, {
+      tid: tid,
+      orig_text: text,
+    });
+
+    console.log("AI 이미지 생성 완료:", response.data.imageUrl);
+    return response.data.imageUrl; // API 응답에서 이미지 URL 반환
+  } catch (error) {
+    console.error("AI 이미지 생성 실패:", error);
+    // 에러 UI 표시 (필요 시)
+    return null;
+  } finally {
+    // 로딩 UI 숨김 (필요 시)
+  }
+}
+
+// 수정: 파이어베이스 제출 함수
+async function submitSurveyToFB() {
   const existingSurvey = localStorage.getItem('userSurvey');
   console.log('get existingSurvey', existingSurvey);
 
   if (existingSurvey) {
     const parseSurvey = JSON.parse(existingSurvey);
 
+    // 1. TextToImg 페이지에서 입력한 텍스트가 있는지 확인
+    if (route.path === '/text2img' && parseSurvey.notes) {
+      // 2. 이미지 생성 API 호출
+      const generatedUrl = await generateImageFromText(parseSurvey.notes);
+      if (generatedUrl) {
+        // 3. 반환된 이미지 URL을 survey 객체에 저장
+        parseSurvey.imageUrl = generatedUrl;
+      }
+    }
+
+    // 4. 최종 데이터로 FB에 저장 또는 업데이트
     if (!lastDocumentId.value) {
-      submitSurvey(parseSurvey); // TODO 배포시에 주석 풀기
+      await submitSurvey(parseSurvey);
     } else {
-      updateSurvey(parseSurvey); // TODO 배포시에 주석 풀기
+      await updateSurvey(parseSurvey);
     }
   } else {
     console.error("No survey data to submit.");
