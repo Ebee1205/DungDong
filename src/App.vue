@@ -382,7 +382,7 @@ async function generateImageFromText(text) {
       orig_text: text,
     });
 
-    if (response.data && response.data.status === 'SUCCESS') {
+    if (response.data && response.data.status.code === "S0000") {
       console.log("AI 이미지 생성 완료:", response.data.data);
       return { 
         success: true, 
@@ -394,7 +394,7 @@ async function generateImageFromText(text) {
       return { 
         success: false, 
         surveyData: null, 
-        error: response.data?.status?.detail || "API 응답 상태가 SUCCESS가 아닙니다" 
+        error: response.data?.status?.detail || "API 응답 상태가 S0000가 아닙니다" 
       };
     }
   } catch (error) {
