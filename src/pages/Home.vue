@@ -14,7 +14,7 @@
     </v-row>
 
     <v-card
-      class="mx-auto | margin-top-72 | pt-2 pl-4 pr-4"
+      class="mx-auto | margin-top-56 | pt-2 pl-4 pr-4"
       max-width="320" rounded="lg"
     >
       <v-card-title class="card-title-text">
@@ -33,18 +33,36 @@
     </v-card>
 
     <v-row 
-      v-if="sNewStart"
       no-gutters justify="center" class="margin-42 | mt-12"
+    >
+      <v-col class="pa-0 | text-center">
+        <div class="speech-bubble | float-animation">
+          👇 이미 작성한 글이 있다면 👇
+        </div>
+        <v-btn 
+          @click="handleClickTextToImgBtn"
+          variant="flat" color="#FF6161" rounded="xl" size="large" width="100%" height="52px"
+          class="text-btn"
+        >
+          텍스트 입력하여 제작
+        </v-btn>
+      </v-col>
+    </v-row>
+
+    <div style="font-size: 15px; margin: 10px auto; text-align: center;">혹은</div>
+    
+    <v-row 
+      no-gutters justify="center" class="margin-42 | mt-2"
     >
       <v-btn 
         @click="handleClickStartBtn"
-        variant="flat" color="#FF6161" rounded="xl" size="large" width="100%" height="52px"
-        class="text-btn"
+        variant="flat" color="#FF6161" rounded="xl" size="large" width="80%" height="32px"
+        class="text-small-btn"
       >
-        시작하기
+        직접 체크하여 제작
       </v-btn>
     </v-row>
-    <v-row 
+    <!-- <v-row 
       v-else="sNewStart"
       no-gutters justify="center" class="margin-42 | mt-12"
     >
@@ -55,7 +73,7 @@
       >
         다시 시작
       </v-btn>
-    </v-row>
+    </v-row> -->
     <!-- <v-row 
       v-if="sCtnStart"
       no-gutters justify="center" class="margin-42 | mt-2"
@@ -103,6 +121,12 @@ const sNewStart = ref(true);
 const sCtnStart = ref(false);
 
 // ----- 함수 정의 ----- //
+const router = useRouter();
+
+// 텍스트로 제작
+function handleClickTextToImgBtn() {
+  router.push('/text2img');
+}
 
 // 설문 시작
 function handleClickStartBtn() {
@@ -144,8 +168,8 @@ function handleClickContBtn() {
   margin-right: 42px;
 }
 
-.margin-top-72 {
-  margin-top: 72px;
+.margin-top-56 {
+  margin-top: 56px;
 }
 
 .margin-88 {
@@ -155,7 +179,7 @@ function handleClickContBtn() {
 
 .title-text-sub {
   text-align: center;
-  font-size: 16px;
+  font-size: 15px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -171,6 +195,19 @@ function handleClickContBtn() {
   letter-spacing: -0.4px;
 }
 
+.text-small-btn {
+  color: #FFF;
+  text-align: center;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+}
+
+.text-btn:hover {
+  transform: scale(1.05);
+}
+
 .card-title-text {
   padding-left: 8px;
   color: #000000 !important; /* 아이콘 색상 */
@@ -179,6 +216,67 @@ function handleClickContBtn() {
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+}
+
+.speech-bubble {
+  position: relative;
+  background-color: #FFFFFF;
+  color: #000000;
+  border: 0.5px solid #C0C0C0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 8px 16px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-bottom: 22px; /* Increased margin for tail */
+  font-size: 13px;
+  font-weight: 500;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+}
+
+/* Tail border */
+.speech-bubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #C0C0C0;
+}
+
+/* Tail fill */
+.speech-bubble::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10.5px solid transparent;
+  border-right: 10.5px solid transparent;
+  border-top: 10.5px solid #FFFFFF;
+  margin-top: -1.5px; 
+  z-index: 1; 
+}
+
+.float-animation {
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(1px);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+  100% {
+    transform: translateY(1px);
+  }
 }
 
 </style>

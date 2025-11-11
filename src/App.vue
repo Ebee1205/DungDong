@@ -13,7 +13,7 @@
           </v-row>
         </v-col>
         <v-col cols="8">
-          <v-row v-if="sFooter" class="align-center | justify-end | pr-2">
+          <v-row v-if="sHeader" class="align-center | justify-end | pr-2">
             <v-col cols="auto" class="progress-bar">
                 <div
                 v-for="(step, index) in 7"
@@ -46,6 +46,18 @@
         no-gutters
       >
         <v-btn 
+          v-if="sHomeBtn"
+          prepend-icon="mdi-arrow-left" 
+          variant="text"
+          @click="handleClickGoPage('home')"
+        >
+          <template v-slot:prepend>
+            <v-icon color="#FF5858"></v-icon>
+          </template>
+          Home
+        </v-btn>
+        <v-btn 
+          v-else="sHomeBtn"
           prepend-icon="mdi-arrow-left" 
           variant="text"
           @click="handleClickGoPage('back')"
@@ -72,6 +84,7 @@
           append-icon="mdi-arrow-right" 
           variant="text"
           @click="handleClickGoPage('finish')"
+          :loading="isSubmitting"
         >
           <template v-slot:append>
             <v-icon color="#FF5858"></v-icon>
@@ -105,7 +118,7 @@
       <template v-slot:actions>
           <v-row no-gutters justify="end">
               <v-btn color="#FF5858" width="25%" rounded="xl" variant="outlined" @click="dialog.dialogActive = false">취소</v-btn>
-              <v-btn color="#FF5858" width="25%" rounded="xl" variant="flat" class="ml-2" @click="dialog.okButton">확인</v-btn>
+              <v-btn color="#FF5858" width="25%" rounded="xl" variant="flat" class="ml-2" @click="dialog.okButton" :loading="isSubmitting">확인</v-btn>
           </v-row>
       </template>
     </v-card>
@@ -114,9 +127,8 @@
 
 <script setup>
 // ----- 선언부 ----- //
-import { onMounted, onUnmounted, ref, computed, watch} from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { routes } from "@/router"
 
 import { db } from "@/common/Firebase"; // Firestore 초기화 파일
 import { collection, addDoc, updateDoc, doc } from "firebase/firestore"; // Firestore 함수
@@ -126,7 +138,6 @@ import axios from "axios";
 const router = useRouter();
 const route = useRoute();
 
-const steps = [1, 2, 3, 4, 5, 6, 7];
 const surveyPage = ref([
   { path: "/", meta: { appbar: false, index: 0 } },
   { path: "/home", meta: { appbar: false, index: 0 } },
@@ -137,11 +148,13 @@ const surveyPage = ref([
   { path: "/survey5", meta: { appbar: true, index: 5 } },
   { path: "/survey6", meta: { appbar: true, index: 6 } },
   { path: "/survey7", meta: { appbar: true, index: 7 } },
-  // { path: "/end", meta: { appbar: false, index: 8 } },
+  { path: "/text2img", meta: { appbar: true, index: 11 } },
 ]);
 const pageIndex = ref(0);
 
+const sHomeBtn = ref(true);
 const sNextBtn = ref(true);
+const sHeader = ref(false);
 const sFooter = ref(false);
 const sAppBar = ref(false);
 
@@ -152,28 +165,30 @@ const dialog = ref({
   okButton() {}
 });
 
-const lastDocumentId = ref(null)
+const surveyId = ref(null);
+const isSubmitting = ref(false);
 const survey = ref({
-  dorm:  null,           // 기숙사 숫자 int
-  birth: null,          // 생년 int /2002
-  studentId: null,      // 학번 2자리 / 25
-  college: 0,        // 단과대 (문자열)
-  mbti: "",           // MBTI List
-  smoke: null,           // 흡연 여부 0,1,2 (int)
-  drink: "",          // 음주 정보 (예: "12-0-00")
-  sdEtc: "",  // 음주/흡연 관련 기타 (서술형 문자열)
-  wakeUp: "",         // 기상 시간 ("00-00")
-  lightOff: "",       // 소등 시간 ("00-00")
-  bedTime: "",        // 취침 시간 ("00-00")
-  sleepHabit: 0,      // 잠버릇 0,1,2,3 (int)
-  clean: 0,           // 청소·정리정돈 성향 0,1,2,3 (int)
-  bug: 0,             // 벌레에 대한 민감도 0,1,2 (int)
-  eatIn: 0,           // 실내취식 0,1,2,3 (int)
-  noise: 0,           // 소음 허용/민감도 0,1,2 (int)
-  share: 0,           // 공유·공용물품 성향 0,1,2,3 (int)
-  home: 0,      // 귀가 주기 0,1,2,3 (int)
-  selectTag: [],           // 해시태그(태그) 배열 (문자열 리스트)
-  notes: ""           // 기타 참고사항 (서술형 문자열)
+  dorm:  null,
+  birth: null,
+  studentId: null,
+  college: 0,
+  mbti: "",
+  smoke: null,
+  drink: "",
+  sdEtc: "",
+  wakeUp: "",
+  lightOff: "",
+  bedTime: "",
+  sleepHabit: 0,
+  clean: 0,
+  bug: 0,
+  eatIn: 0,
+  noise: 0,
+  share: 0,
+  home: 0,
+  selectTag: [],
+  notes: "",
+  imageUrl: ""
 });
 
 
@@ -183,6 +198,17 @@ onMounted(() => {
   
   if (!localStorage.getItem('appInitialized')) {
     initSurvey();
+  } else {
+    // Restore survey data from localStorage
+    const savedSurvey = localStorage.getItem('userSurvey');
+    if (savedSurvey) {
+      survey.value = JSON.parse(savedSurvey);
+    }
+    // Restore surveyId from localStorage
+    const savedSurveyId = localStorage.getItem('surveyId');
+    if (savedSurveyId) {
+      surveyId.value = savedSurveyId;
+    }
   }
 });
 
@@ -195,27 +221,46 @@ watch(() => route.path, (path) => {
     const currentPage = surveyPage.value.find((page) => page.path === path);
     if (currentPage) {
       pageIndex.value = currentPage.meta.index - 1;
-    } else {
+    } else if (!['/end', '/home', '/'].includes(path)) {
       console.error("Current path does not exist in surveyPage:", path);
     }
 
+    // 헤더, 푸터, 앱바 설정
     if (path === "/home" || path === "/") {
+      sHeader.value = false;
       sFooter.value = false;
       sAppBar.value = false;
 
+    } else if (path === "/text2img") {
+      sHeader.value = false;
+      sFooter.value = true;
+      sAppBar.value = true;
+
     } else if (path === "/end") {
+      sHeader.value = false;
       sFooter.value = false;
       sAppBar.value = true;
 
     } else {
+      sHeader.value = true;
       sFooter.value = true;
       sAppBar.value = true;
     }
 
-    if (path === "/survey7") {
-      sNextBtn.value = false;
+    // 전/후/처음 버튼 관련
+
+    // 'Next' vs 'Finish' button logic
+    if (path === '/survey7' || path === '/text2img') {
+      sNextBtn.value = false; // Show Finish
     } else {
-      sNextBtn.value = true;
+      sNextBtn.value = true; // Show Next
+    }
+
+    // 'Home' vs 'Back' button logic
+    if (path === '/survey1' || path === '/text2img') {
+      sHomeBtn.value = true; // Show Home
+    } else {
+      sHomeBtn.value = false; // Show Back
     }
   },
   { immediate: true }
@@ -226,10 +271,12 @@ function initSurvey() {
   localStorage.setItem('appInitialized', 'true');
   localStorage.setItem('userProgress', JSON.stringify({ currentStep: 0}));
   localStorage.setItem('userSurvey', JSON.stringify(survey.value));
+  localStorage.removeItem('surveyId');
+  surveyId.value = null;
 
   console.log("set localStorage appInitialized:", localStorage.getItem('appInitialized'))
   console.log("set localStorage userProgress:", localStorage.getItem('userProgress'))
-  console.log("set localStorage userProgress:", localStorage.getItem('userSurvey'))
+  console.log("set localStorage userSurvey:", localStorage.getItem('userSurvey'))
 }
 
 function handleClickGoPage(state) {
@@ -242,10 +289,18 @@ function handleClickGoPage(state) {
   }
 
   switch (state) {
+    case "home":
+      openDialog(
+        '처음으로 돌아가기',
+        '처음 화면으로 돌아갑니다.<br>현재까지 작성한 내용은 초기화됩니다.',
+        emitRestartSurvey
+      )
+      break;
+
     case "back":
       if (currentIndex > 0) {
         const previousPage = surveyPage.value[currentIndex - 1]; 
-        console.log("현재 페이지:", route.path);
+        console.log("현재 페이지:", currentIndex.path);
         console.log("이동한 페이지:", previousPage.path);
         router.push(previousPage.path); 
       }
@@ -264,7 +319,7 @@ function handleClickGoPage(state) {
       openDialog(
         '이미지 생성하기',
         '설문조사를 끝내고 이미지를 생성할까요?<br>물론, 다시 돌아와 수정할 수 있습니다.',
-        submitSurveyToFB
+        submitSurveyToFBWithLoading
       )
       break;
 
@@ -273,7 +328,6 @@ function handleClickGoPage(state) {
       break;
   }
 };
-
 
 function emitHideAppbar() {
   console.log('Event Received: hide appbar');
@@ -288,8 +342,15 @@ function emitStartSurvey() {
 
 function emitRestartSurvey() {
   console.log('Event Received: Restart Survey');
-  router.push("/home");
+  // 완전 초기화
+  localStorage.removeItem('userSurvey');
+  localStorage.removeItem('userProgress');
+  localStorage.removeItem('surveyId');
+  localStorage.removeItem('appInitialized');
+  
+  dialog.value.dialogActive = false;
   initSurvey();
+  router.push("/home");
 };
 
 function emitFixSurvey() {
@@ -297,18 +358,6 @@ function emitFixSurvey() {
   router.push("/survey7");
 };
 
-// function emitContinueSurvey(payload) {
-//   console.log('Event Received: Continue Survey', payload);
-
-//   const targetPath = surveyPage.value[payload.currentStep];
-
-//   if (targetPath) {
-//     console.log('Navigating to:', targetPath);
-//     router.push(targetPath); // 해당 경로로 이동
-//   } else {
-//     console.error('Invalid currentStep:', payload.currentStep);
-//   }
-// };
 function emitContinueSurvey() {
   console.log('Event Received: Continue Survey');
   router.push("/survey1");
@@ -321,54 +370,147 @@ function openDialog(title, text, onConfirm) {
   dialog.value.dialogActive = true;
 }
 
-// 파이어베이스
-function submitSurveyToFB() {
+// 신규: 텍스트로 이미지 생성 API를 호출하는 함수
+async function generateImageFromText(text) {
+  console.log("AI 이미지 생성을 시작합니다:", text);
+
+  try {
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const tid = `survey-${Date.now()}`;
+    const response = await axios.post(`${baseUrl}/v1/generate/survey`, {
+      tid: tid,
+      orig_text: text,
+    });
+
+    if (response.data && response.data.status.code === "S0000") {
+      console.log("AI 이미지 생성 완료:", response.data.data);
+      return { 
+        success: true, 
+        surveyData: response.data.data, 
+        error: null 
+      };
+    } else {
+      console.error("AI 이미지 생성 실패 (API 응답 오류):", response.data);
+      return { 
+        success: false, 
+        surveyData: null, 
+        error: response.data?.status?.detail || "API 응답 상태가 S0000가 아닙니다" 
+      };
+    }
+  } catch (error) {
+    console.error("AI 이미지 생성 실패 (네트워크 또는 서버 오류):", error);
+    return { 
+      success: false, 
+      surveyData: null, 
+      error: error.response?.data?.status?.detail || error.message 
+    };
+  }
+}
+
+// ===== submitSurveyToFBWithLoading 수정 =====
+async function submitSurveyToFBWithLoading() {
+  if (isSubmitting.value) return;
+  
+  isSubmitting.value = true;
+  dialog.value.dialogActive = false; // 확인 다이얼로그 닫기
+  
+  try {
+    await submitSurveyToFB();
+    // 성공 시 페이지 이동은 submitSurveyToFB 내부에서 처리
+  } catch (error) {
+    console.error("Submission process failed:", error);
+    // 에러 다이얼로그 표시
+    openDialog(
+      '제출 실패', 
+      `설문 제출 중 오류가 발생했습니다.<br>${error.message}`, 
+      () => {
+        dialog.value.dialogActive = false;
+      }
+    );
+  } finally {
+    isSubmitting.value = false;
+  }
+}
+
+// ===== submitSurveyToFB 수정 (에러 전파) =====
+async function submitSurveyToFB() {
   const existingSurvey = localStorage.getItem('userSurvey');
   console.log('get existingSurvey', existingSurvey);
 
-  if (existingSurvey) {
-    const parseSurvey = JSON.parse(existingSurvey);
-
-    if (!lastDocumentId.value) {
-      submitSurvey(parseSurvey); // TODO 배포시에 주석 풀기
-    } else {
-      updateSurvey(parseSurvey); // TODO 배포시에 주석 풀기
-    }
-  } else {
+  if (!existingSurvey) {
     console.error("No survey data to submit.");
-    return;
+    throw new Error("저장된 설문 데이터가 없습니다.");
   }
 
-  dialog.value.dialogActive = false;
+  let parsedSurvey = JSON.parse(existingSurvey);
+
+  // 1. TextToImg 페이지에서 AI 처리
+  if (route.path === '/text2img' && parsedSurvey.notes) {
+    console.log("AI 설문 데이터 생성 시작...");
+    
+    const result = await generateImageFromText(parsedSurvey.notes);
+    
+    if (result.success && result.surveyData) {
+      // 2. AI 데이터 병합
+      parsedSurvey = { ...parsedSurvey, ...result.surveyData };
+      
+      // 3. localStorage 즉시 업데이트
+      localStorage.setItem('userSurvey', JSON.stringify(parsedSurvey));
+      console.log("AI 생성 데이터 병합 완료:", result.surveyData);
+    } else {
+      // AI 실패 시 에러 전파
+      console.error("AI 생성 실패:", result.error);
+      throw new Error(`AI 처리 실패: ${result.error || '알 수 없는 오류'}`);
+    }
+  }
+
+  // 4. Firestore 저장/업데이트
+  try {
+    if (!surveyId.value) {
+      await submitSurvey(parsedSurvey);
+    } else {
+      await updateSurvey(parsedSurvey);
+    }
+    console.log("Firestore 저장 완료");
+  } catch (error) {
+    console.error("Firestore 저장 실패:", error);
+    throw new Error("설문 저장에 실패했습니다. 네트워크를 확인해주세요.");
+  }
+
+  // 5. 모든 작업 성공 시에만 페이지 이동
   router.push("/end");
 }
 
-// 설문 데이터를 Firestore에 저장하는 함수
-const submitSurvey = async (survey) => {
-  console.log(typeof survey, survey);
+// ===== submitSurvey 수정 (에러 전파) =====
+const submitSurvey = async (surveyData) => {
+  console.log(typeof surveyData, surveyData);
   try {
-    const docRef = await addDoc(collection(db, "surveys"), survey);
+    const docRef = await addDoc(collection(db, "surveys"), surveyData);
     console.log("Survey submitted successfully with ID:", docRef.id);
     localStorage.setItem('surveyId', docRef.id);
-    lastDocumentId.value = docRef.id;  // 문서 ID 저장
+    surveyId.value = docRef.id;
   } catch (error) {
     console.error("Error submitting survey:", error);
-    localStorage.setItem('surveyId', null);
+    localStorage.removeItem('surveyId');
+    surveyId.value = null;
+    throw error; // 에러 전파
   }
 };
 
-// 문서 ID를 사용하여 해당 문서를 업데이트하는 함수
+// ===== updateSurvey 수정 (에러 전파) =====
 const updateSurvey = async (updates) => {
-  if (!lastDocumentId.value) {
-    console.error("No document ID found. Submitting a survey first.");
-    return;
+  if (!surveyId.value) {
+    const error = new Error("문서 ID가 없습니다. 먼저 설문을 제출해주세요.");
+    console.error(error.message);
+    throw error;
   }
   try {
-    const surveyRef = doc(db, "surveys", lastDocumentId.value);
+    const surveyRef = doc(db, "surveys", surveyId.value);
     await updateDoc(surveyRef, updates);
-    console.log("Survey updated successfully with ID:", lastDocumentId.value);
+    console.log("Survey updated successfully with ID:", surveyId.value);
   } catch (error) {
     console.error("Error updating survey:", error);
+    throw error; // 에러 전파
   }
 };
 
